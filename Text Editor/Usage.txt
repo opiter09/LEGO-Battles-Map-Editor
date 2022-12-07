@@ -1,0 +1,7 @@
+To split the file, drag and drop it onto splitLang.bat, or run "python splitLang.py XXX.lng."
+
+This will produce a set of files which are just numbered, since I can't be bothered to figure out
+where everything is.
+
+To merge everything back, just drag and drop onto mergeLang.bat, or run "python mergeLang.py XXX.lng."
+This will produce a new file named output_XXX.lng, which you can then reinsert into the ROM.
