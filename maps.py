@@ -46,5 +46,35 @@ if (os.path.exists("Uncompressed Maps") == False):
                 os.remove("temp_" + str(i).zfill(3) + ".bin")
                 offset = offset + size
             newFile.close()
+            
+if (os.path.exists("Backup BP") == False):
+    shutil.copytree("LEGO BATTLES/data/BP", "Backup BP")
+
+if (os.path.exists("Uncompressed BP") == False):
+    os.makedirs("Uncompressed BP")
+    for root, dirs, files in os.walk("LEGO BATTLES/data/BP"):
+        for file in files:
+            opening = open(os.path.join(root, file), "rb")
+            reading = opening.read()
+            opening.close()
+            
+            newFile = open("./Uncompressed BP/" + file, "wb")
+            newFile.close()
+            newFile = open("./Uncompressed BP/" + file, "ab")
+            
+            segNumber = int.from_bytes(reading[8:12], "little")
+            offset = 16 + 4 * segNumber
+            for i in range(segNumber):
+                size = int.from_bytes(reading[(16 + (i * 4)):(20 + (i * 4))], "little")
+                tempFile = open("temp_" + str(i).zfill(3) + ".bin", "wb")
+                tempFile.write(reading[offset:(offset + size)])
+                tempFile.close()
+                subprocess.run([ "lzx.exe", "-d", "temp_" + str(i).zfill(3) + ".bin" ])
+                tempFile = open("temp_" + str(i).zfill(3) + ".bin", "rb")
+                newFile.write(tempFile.read())
+                tempFile.close()
+                os.remove("temp_" + str(i).zfill(3) + ".bin")
+                offset = offset + size
+            newFile.close()
                 
             
