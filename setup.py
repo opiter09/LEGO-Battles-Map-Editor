@@ -33,15 +33,7 @@ Then just X out of NitroPaint, and it will immediately open again for the next o
                 for j in range(0, imgwidth, 8):
                     count = count + 1
                     piece = im.crop((j, i, j + 8, i + 8))
-                    piece.save("./Tilesets/" + name + "/" + str(count).zfill(4) + ".png")             
-    
-    if (os.path.exists("Current Blocks") == False):
-        os.makedirs("Current Blocks")
-    else:
-        for root, dirs, files in os.walk("./Current Blocks"):
-            for file in files:
-                os.remove(os.path.join(root, file))
-        
+                    piece.save("./Tilesets/" + name + "/" + str(count).zfill(4) + ".png")                  
 
     if (os.path.exists("Backup Maps") == False):
         shutil.copytree("LEGO BATTLES/data/Maps", "Backup Maps")
@@ -102,5 +94,46 @@ Then just X out of NitroPaint, and it will immediately open again for the next o
                     os.remove("temp_" + str(i).zfill(3) + ".bin")
                     offset = offset + size
                 newFile.close()
+    
+    if (os.path.exists("All Blocks") == False):
+        os.makedirs("All Blocks")
+        for root, dirs, files in os.walk("Uncompressed BP"):
+            for file in [ x for x in files if (x.endswith(".tbp") == True) ]:
+                opening = open(os.path.join(root, file), "rb")
+                reading = opening.read()
+                opening.close()
+                if (file[0:-4].endswith("Tiles") == True):
+                    folder = "All Blocks/" + file[0:-4] + "et"
+                    os.makedirs(folder)
+                    count = 439
+                    tileset = file[0:-4] + "et"
+                else:
+                    folder = "All Blocks/" + file[0:-4].split("_", 1)[1]
+                    os.makedirs(folder)
+                    count = -1
+                    try:
+                        mapF = open("Uncompressed Maps/" + file[0:-4].split("_", 1)[1] + ".map", "rb")
+                        tileset = mapF.read()[11:24].decode("UTF-8").replace("\0", "")
+                        mapF.close()
+                    except FileNotFoundError as error:
+                        continue
+                    
+                for i in range(int.from_bytes(reading[0:2], "little")):
+                    count = count + 1
+                    ID = [ reading[2 + (i * 6)], reading[3 + (i * 6)], reading[4 + (i * 6)], reading[5 + (i * 6)], reading[6 + (i * 6)], reading[7 + (i * 6)] ]
+                    tiles = [0, 0, 0, 0, 0, 0]
+                    new = Image.new("RGB", (24, 16))
+                    for j in range(6):
+                        tiles[j] = Image.open("Tilesets/" + tileset + "/" + str(ID[j]).zfill(4) + ".png")
+                    new.paste(tiles[0], (0, 0))
+                    new.paste(tiles[1], (8, 0))
+                    new.paste(tiles[2], (16, 0))
+                    new.paste(tiles[3], (0, 8))
+                    new.paste(tiles[4], (8, 8))
+                    new.paste(tiles[5], (16, 8))
+                    new.save(folder + "/" + str(count).zfill(4) + "_" + str(ID[0]) + "-" + str(ID[1]) + "-" + str(ID[2]) + "-"
+                        + str(ID[3]) + "-" + str(ID[4]) + "-" + str(ID[5]) + ".png")
+                    
+                
                     
                 
