@@ -2,7 +2,7 @@
 This is a WIP tool to edit the maps of the NDS video game LEGO Battles. This is heavily based upon the work of LiruJ's fan remake, which can be found at
 https://github.com/LiruJ/OpenLegoBattles.
 
-This tool makes use of jNDSTool. Per its GNU license, I must inform you that the source code for jNDSTool can be found at https://github.com/JackHack96/jNdstool.
+This tool makes use of NDSTool. Per its GNU license, I must inform you that the source code for NDSTool can be found at https://github.com/devkitPro/ndstool.
 
 This tool also makes use of NitroPaint. Although its BSD license does not require me to make its source code available, I will still tell you that it can be
 found at https://github.com/Garhoogin/NitroPaint.

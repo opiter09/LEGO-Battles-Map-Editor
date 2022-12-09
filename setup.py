@@ -9,7 +9,7 @@ import numpy as np
 def runSetup():
     if (os.path.exists("LEGO BATTLES") == False):
         filename = psg.popup_get_file("Enter your ROM file:", file_types = [("NDS Files", "*.nds")])
-        subprocess.run([ "java", "-jar", "jNDSTool-1.0.1.jar", "-x", filename, "-d", "LEGO BATTLES" ])
+        subprocess.run([ "./ndstool.exe", "-x", filename, "-d", "LEGO BATTLES" ])
 
     if (os.path.exists("Tilesets") == False):
         psg.popup("You will now need to convert each of the tilesets to a PNG. NitroPaint will automatically open three times in a row. Each time \

@@ -23,3 +23,5 @@
 *.NCER
 *.ini
 test.py
+*.nds
+*.pyc
