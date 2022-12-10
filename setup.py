@@ -105,12 +105,12 @@ Then just X out of NitroPaint, and it will immediately open again for the next o
                 if (file[0:-4].endswith("Tiles") == True):
                     folder = "All Blocks/" + file[0:-4] + "et"
                     os.makedirs(folder)
-                    count = 439
+                    count = -1
                     tileset = file[0:-4] + "et"
                 else:
                     folder = "All Blocks/" + file[0:-4].split("_", 1)[1]
                     os.makedirs(folder)
-                    count = -1
+                    count = 439
                     try:
                         mapF = open("Uncompressed Maps/" + file[0:-4].split("_", 1)[1] + ".map", "rb")
                         tileset = mapF.read()[11:24].decode("UTF-8").replace("\0", "")
@@ -120,15 +120,17 @@ Then just X out of NitroPaint, and it will immediately open again for the next o
                     
                 for i in range(int.from_bytes(reading[0:2], "little")):
                     count = count + 1
-                    if (count == 441) and (file[0:-4].endswith("Tiles") == True):
+                    if (count == 440) and (file[0:-4].endswith("Tiles") == True):
                         break
-                    ID = [0, 0, 0, 0, 0, 0]
-                    tiles = [0, 0, 0, 0, 0, 0]
+                    ID = []
+                    tiles = []
                     new = Image.new("RGB", (24, 16))
                     for j in range(2, 14, 2):
-                        ID[(j - 2) // 2] = int.from_bytes(reading[(j + (i * 6)):(j + 2 + (i * 6))], "little")
-                    for j in range(6):
-                        tiles[j] = Image.open("Tilesets/" + tileset + "/" + str(ID[j]).zfill(4) + ".png")
+                        ID.append(int.from_bytes(reading[(j + (i * 12)):(j + 2 + (i * 12))], "little"))
+                    if (max(ID) >= 1024):
+                        continue
+                    for j in range(6):                           
+                        tiles.append(Image.open("Tilesets/" + tileset + "/" + str(ID[j]).zfill(4) + ".png"))
                     new.paste(tiles[0], (0, 0))
                     new.paste(tiles[1], (8, 0))
                     new.paste(tiles[2], (16, 0))
