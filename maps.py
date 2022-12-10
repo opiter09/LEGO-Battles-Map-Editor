@@ -3,6 +3,7 @@ import random
 import os
 import subprocess
 import shutil
+import numpy as np
 from PIL import Image
 from setup import runSetup
 
@@ -21,30 +22,29 @@ width = reading[8]
 tileset = reading[11:24].decode("UTF-8").replace("\0", "")
 
 offset = 0x2B + 3 * length * width + 2 + int.from_bytes(reading[(0x2B + 3 * length * width):(0x2B + 3 * length * width + 2)], "little")
-imageList = [[0] * length] * width
-tileList = [[0] * length] * width
-count = -1
+tileList = []
+bigImage = Image.new("RGB", (length * 8, width * 8))
+x = -1
+y = 0
 for i in range(offset, offset + 2 * length * width, 2):
-    count = count + 1
+    x = x + 1
+    if (x >= length):
+        x = 0
+        y = y + 1
     tile = int.from_bytes(reading[i:(i + 2)], "little")
-    tileList[count // width][count % length] = tile
+    tileList.append(tile)
     if (tile >= 440):
         for root, dirs, files in os.walk("All Blocks/" + tileset):
             for file in files:
                 if (int(file.split("_")[0]) == tile):
-                    imageList[count // width][count % length] = os.path.join(root, file)
+                    bigImage.paste(Image.open(os.path.join(root, file)), (x * 8, y * 8))
                     break
     else:
         for root, dirs, files in os.walk("All Blocks/" + filename.split("/")[-1].split(".")[0]):
             for file in files:
                 if (int(file.split("_")[0]) == tile):
-                    imageList[count // width][count % length] = os.path.join(root, file)
+                    bigImage.paste(Image.open(os.path.join(root, file)), (x * 8, y * 8))
                     break
-
-bigImage = Image.new("RGB", (length * 8, width * 8))
-for i in range(width):
-    for j in range(length):
-        bigImage.paste(Image.open(imageList[i][j]), (j * 8, i * 8))
 bigImage.save("currentMap.png")
 window = psg.Window("", [ [psg.Image("currentMap.png")] ])
 while True:
