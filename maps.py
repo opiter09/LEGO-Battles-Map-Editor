@@ -3,7 +3,6 @@ import random
 import os
 import subprocess
 import shutil
-import numpy as np
 from PIL import Image
 from setup import runSetup
 
