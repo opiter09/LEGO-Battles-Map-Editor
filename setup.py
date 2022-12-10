@@ -118,8 +118,10 @@ Then just X out of NitroPaint, and it will immediately open again for the next o
                     except FileNotFoundError as error:
                         continue
                     
-                for i in range(min(int.from_bytes(reading[0:2], "little"), 500)):
+                for i in range(int.from_bytes(reading[0:2], "little")):
                     count = count + 1
+                    if (count == 441) and (file[0:-4].endswith("Tiles") == True):
+                        break
                     ID = [0, 0, 0, 0, 0, 0]
                     tiles = [0, 0, 0, 0, 0, 0]
                     new = Image.new("RGB", (24, 16))
