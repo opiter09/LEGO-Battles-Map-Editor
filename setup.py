@@ -8,17 +8,20 @@ import numpy as np
 
 def runSetup():
     if (os.path.exists("LEGO BATTLES") == False):
+        os.makedirs("LEGO BATTLES")
         filename = psg.popup_get_file("Enter your ROM file:", file_types = [("NDS Files", "*.nds")])
-        subprocess.run([ "./ndstool.exe", "-x", filename, "-d", "LEGO BATTLES" ])
+        subprocess.run([ "./ndstool.exe", "-x", filename, "-d", "LEGO BATTLES/data",  "-y", "LEGO BATTLES/overlay", "-9", "LEGO BATTLES/arm9.bin",
+            "-7", "LEGO BATTLES/arm7.bin", "-y9", "LEGO BATTLES/arm9ovltable.bin", "-y7", "LEGO BATTLES/arm7ovltable.bin",
+            "-t", "LEGO BATTLES/banner.bin", "-h", "LEGO BATTLES/header.bin", "-o", "LEGO BATTLES/logo.bin" ])
 
     if (os.path.exists("Tilesets") == False):
         psg.popup("You will now need to convert each of the tilesets to a PNG. NitroPaint will automatically open three times in a row. Each time \
 you must press File -> Export, then save the PNG as XXXTileset.png in the same folder as this exe, where XXX = King, then Mars, then Pirate. \
 Then just X out of NitroPaint, and it will immediately open again for the next one.")
 
-        subprocess.run([ "NitroPaint.exe", "LEGO BATTLES/KingTileset.NCLR", "LEGO BATTLES/KingTileset.NCGR" ])
-        subprocess.run([ "NitroPaint.exe", "LEGO BATTLES/MarsTileset.NCLR", "LEGO BATTLES/MarsTileset.NCGR" ])
-        subprocess.run([ "NitroPaint.exe", "LEGO BATTLES/PirateTileset.NCLR", "LEGO BATTLES/PirateTileset.NCGR" ])
+        subprocess.run([ "NitroPaint.exe", "LEGO BATTLES/data/KingTileset.NCLR", "LEGO BATTLES/data/KingTileset.NCGR" ])
+        subprocess.run([ "NitroPaint.exe", "LEGO BATTLES/data/MarsTileset.NCLR", "LEGO BATTLES/data/MarsTileset.NCGR" ])
+        subprocess.run([ "NitroPaint.exe", "LEGO BATTLES/data/PirateTileset.NCLR", "LEGO BATTLES/data/PirateTileset.NCGR" ])
 
         os.makedirs("Tilesets")
         os.rename("KingTileset.png", "Tilesets/KingTileset.png")
@@ -36,11 +39,11 @@ Then just X out of NitroPaint, and it will immediately open again for the next o
                     piece.save("./Tilesets/" + name + "/" + str(count).zfill(4) + ".png")                  
 
     if (os.path.exists("Backup Maps") == False):
-        shutil.copytree("LEGO BATTLES/Maps", "Backup Maps")
+        shutil.copytree("LEGO BATTLES/data/Maps", "Backup Maps")
 
     if (os.path.exists("Uncompressed Maps") == False):
         os.makedirs("Uncompressed Maps")
-        for root, dirs, files in os.walk("LEGO BATTLES/Maps"):
+        for root, dirs, files in os.walk("LEGO BATTLES/data/Maps"):
             for file in files:
                 opening = open(os.path.join(root, file), "rb")
                 reading = opening.read()
@@ -66,11 +69,11 @@ Then just X out of NitroPaint, and it will immediately open again for the next o
                 newFile.close()
                 
     if (os.path.exists("Backup BP") == False):
-        shutil.copytree("LEGO BATTLES/BP", "Backup BP")
+        shutil.copytree("LEGO BATTLES/data/BP", "Backup BP")
 
     if (os.path.exists("Uncompressed BP") == False):
         os.makedirs("Uncompressed BP")
-        for root, dirs, files in os.walk("LEGO BATTLES/BP"):
+        for root, dirs, files in os.walk("LEGO BATTLES/data/BP"):
             for file in files:
                 opening = open(os.path.join(root, file), "rb")
                 reading = opening.read()

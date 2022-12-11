@@ -4,9 +4,10 @@ import os
 import subprocess
 import shutil
 from PIL import Image
-from setup import runSetup
+import setup
+import build
 
-runSetup()
+setup.runSetup()
 
 filename = psg.popup_get_file("Enter your MAP file:", file_types = [("MAP Files", "*.map")])
 if (os.path.exists("All Blocks/" + filename.split("/")[-1].split(".")[0]) == False):
@@ -45,12 +46,23 @@ for i in range(offset, offset + 2 * length * width, 2):
                     bigImage.paste(Image.open(os.path.join(root, file)), (x * 24, y * 16))
                     break
 bigImage.save("currentMap.png")
-window = psg.Window("", [ [psg.Image("currentMap.png")] ], grab_anywhere = True, resizable = True)
+
+layout = [
+    [ psg.Button("Build ROM"), psg.Button("Build DetailTiles"), psg.Button("Build Map") ],
+    [ psg.Button("Top Left"), psg.Button("Top Right"), psg.Button("Bottom Left"), psg.Button("Bottom Right") ]
+]
+window = psg.Window("", layout, grab_anywhere = True, resizable = True)
 while True:
     event, values = window.read()
     # See if user wants to quit or window was closed
     if (event == psg.WINDOW_CLOSED) or (event == "Quit"):
         break
+    elif (event == "Build ROM"):
+        build.buildROM()
+    elif (event == "Build DetailTiles"):
+        build.buildDetailTiles()
+    elif (event == "Build Map"):
+        build.buildMap()
 # Finish up by removing from the screen
 window.close()
                     
