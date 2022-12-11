@@ -9,7 +9,7 @@ import build
 
 setup.runSetup()
 
-filename = psg.popup_get_file("Enter your MAP file:", file_types = [("MAP Files", "*.map")])
+filename = psg.popup_get_file("Enter your Map file:", file_types = [("MAP Files", "*.map")])
 if (os.path.exists("All Blocks/" + filename.split("/")[-1].split(".")[0]) == False):
     print("This map file has no block set!")
     exit()
@@ -59,10 +59,13 @@ while True:
         break
     elif (event == "Build ROM"):
         build.buildROM()
+        psg.popup("ROM successfully built!")
     elif (event == "Build DetailTiles"):
-        build.buildDetailTiles()
+        build.buildDetailTiles(filename.split("/")[-1].split(".")[0])
+        psg.popup("Block file successfully built!")
     elif (event == "Build Map"):
         build.buildMap()
+        psg.popup("Map file successfully built!")
 # Finish up by removing from the screen
 window.close()
                     
