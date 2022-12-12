@@ -5,3 +5,7 @@ where everything is.
 
 To merge everything back, just drag and drop onto mergeLang.bat, or run "python mergeLang.py XXX.lng."
 This will produce a new file named output_XXX.lng, which you can then reinsert into the ROM.
+
+Unfortunately, it has been discovered that regular Notepad at least does not handle these files well.
+You should use either a Hex Editor, or better yet Notepad++ (https://notepad-plus-plus.org/). The key
+thing is to ensure the 00/NUL's are all still there.
