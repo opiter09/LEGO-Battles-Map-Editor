@@ -8,4 +8,4 @@ This will produce a new file named output_XXX.lng, which you can then reinsert i
 
 Unfortunately, it has been discovered that regular Notepad at least does not handle these files well.
 You should use either a Hex Editor, or better yet Notepad++ (https://notepad-plus-plus.org/). The key
-thing is to ensure the 00/NUL's are all still there.
+thing is to ensure that the 00/NUL's are all still there.
