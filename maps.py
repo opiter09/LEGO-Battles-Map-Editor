@@ -21,7 +21,24 @@ length = reading[7]
 width = reading[8]
 tileset = reading[11:24].decode("UTF-8").replace("\0", "")
 
-offset = 0x2B + 3 * length * width + 2 + int.from_bytes(reading[(0x2B + 3 * length * width):(0x2B + 3 * length * width + 2)], "little")
+layer1 = []
+for i in range(0x2B, 0x2B + length * width):
+    layer1.append(reading[i])
+layer2 = []
+for i in range(0x2B + length * width, 0x2B + 2 * length * width):
+    layer2.append(reading[i])
+layer3 = []
+for i in range(0x2B + 2 * length * width, 0x2B + 3 * length * width):
+    layer3.append(reading[i])
+
+trees = []
+stripCount = int.from_bytes(reading[(0x2B + 3 * length * width):(0x2B + 3 * length * width + 2)], "little")
+pos = 0
+for i in range(stripCount):
+    trees = trees + [pos] * reading[0x2B + 3 * length * width + 2 + i]
+    pos = int(not pos)
+
+offset = 0x2B + 3 * length * width + 2 + stripCount
 tileList = []
 bigImage = Image.new("RGB", (length * 24, width * 16))
 x = -1
