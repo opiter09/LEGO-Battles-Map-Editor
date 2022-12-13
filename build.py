@@ -46,12 +46,50 @@ def buildROM():
         "-t", "LEGO BATTLES/banner.bin", "-h", "LEGO BATTLES/header.bin", "-o", "LEGO BATTLES/logo.bin" ])
 
 def buildDetailTiles(mapName):
-    mFile = open("Uncompressed BP/DetailTiles_" + mapName + ".tbp", "wb")
-    mFile.close()
-    mFile = open("Uncompressed BP/DetailTiles_" + mapName + ".tbp", "ab")
-    mFile.write(len(os.listdir("All Blocks/" + mapName)).to_bytes(2, "little"))
+    dFile = open("Uncompressed BP/DetailTiles_" + mapName + ".tbp", "wb")
+    dFile.close()
+    dFile = open("Uncompressed BP/DetailTiles_" + mapName + ".tbp", "ab")
+    dFile.write(len(os.listdir("All Blocks/" + mapName)).to_bytes(2, "little"))
     for root, dirs, files in os.walk("All Blocks/" + mapName):
         for file in files:
             for num in file.split("_")[1].split(".")[0].split("-"):
-                mFile.write(int(num).to_bytes(2, "little"))
+                dFile.write(int(num).to_bytes(2, "little"))
+    dFile.close()
+
+def buildMap(mapName, length, width, tileset, bigDataList):
+    mFile = open("Uncompressed Maps/" + mapName + ".map", "wb")
     mFile.close()
+    mFile = open("Uncompressed Maps/" + mapName + ".map", "ab")
+    mFile.write(("MAPTERR").encode("UTF-8"))
+    mFile.write(length.to_bytes(1, "little"))
+    mFile.write(width.to_bytes(1, "little"))
+    mFile.write((0x0302).to_bytes(2, "big"))
+    mFile.write(tileset.encode("UTF-8"))
+    mFile.write(bytes(32 - len(tileset)))
+    for i in range(3):
+        for num in bigDataList[i]:
+            mFile.write(num.to_bytes(1, "little"))
+    convert = []
+    pos = 0
+    count = 0
+    for num in bigDataList[3]:
+        if (num == pos):
+            count = count + 1
+            if (count == 256):
+                convert = convert + [255, 0]
+                count = 1
+        else:
+            convert.append(count)
+            count = 1
+            pos = int(not pos)
+    convert.append(count)
+    mFile.write(len(convert).to_bytes(2, "little"))
+    for num in convert:
+        mFile.write(num.to_bytes(1, "little"))
+    for num in bigDataList[4]:
+        mFile.write(num.to_bytes(2, "little"))
+    mFile.write(bigDataList[5])
+    mFile.close()
+    
+        
+    

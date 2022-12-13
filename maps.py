@@ -40,6 +40,7 @@ for i in range(stripCount):
 
 offset = 0x2B + 3 * length * width + 2 + stripCount
 tileList = []
+imageList = []
 bigImage = Image.new("RGB", (length * 24, width * 16))
 x = -1
 y = 0
@@ -54,19 +55,26 @@ for i in range(offset, offset + 2 * length * width, 2):
         for root, dirs, files in os.walk("All Blocks/" + tileset):
             for file in files:
                 if (int(file.split("_")[0]) == tile):
+                    imageList.append(os.path.join(root, file))
                     bigImage.paste(Image.open(os.path.join(root, file)), (x * 24, y * 16))
                     break
     else:
         for root, dirs, files in os.walk("All Blocks/" + filename.split("/")[-1].split(".")[0]):
             for file in files:
                 if (int(file.split("_")[0]) == tile):
+                    imageList.append(os.path.join(root, file))
                     bigImage.paste(Image.open(os.path.join(root, file)), (x * 24, y * 16))
                     break
 bigImage.save("currentMap.png")
+unknown = reading[(offset + 2 * length * width):]
 
 layout = [
     [ psg.Button("Build ROM"), psg.Button("Build DetailTiles"), psg.Button("Build Map") ],
-    [ psg.Button("Top Left"), psg.Button("Top Right"), psg.Button("Bottom Left"), psg.Button("Bottom Right") ]
+    [
+        psg.Button("Top Half"),
+        psg.Button("Bottom Half"),
+        psg.DropDown(["KingTileset", "MarsTileset", "PirateTileset"], default_value = tileset, enable_events = True, key = "drop")
+    ]
 ]
 window = psg.Window("", layout, grab_anywhere = True, resizable = True)
 while True:
@@ -81,8 +89,11 @@ while True:
         build.buildDetailTiles(filename.split("/")[-1].split(".")[0])
         psg.popup("Block file successfully built!")
     elif (event == "Build Map"):
-        build.buildMap()
+        bigDataList = [ layer1, layer2, layer3, trees, tileList, unknown ]
+        build.buildMap(filename.split("/")[-1].split(".")[0], length, width, tileset, bigDataList)
         psg.popup("Map file successfully built!")
+    elif (event == "drop"):
+        tileset = values["drop"]
 # Finish up by removing from the screen
 window.close()
                     
